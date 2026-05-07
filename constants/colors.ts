@@ -1,0 +1,31 @@
+export const Colors = {
+  background: '#0b0b0b',
+  surface: '#141414',
+  surfaceElevated: 'rgba(255,255,255,0.05)',
+  surfaceMedium: 'rgba(255,255,255,0.1)',
+  border: 'rgba(255,255,255,0.1)',
+  primary: '#874FE1',
+  primaryDark: '#100D5B',
+  primaryGradient: ['#874FE1', '#100D5B'] as const,
+  primaryGradientStart: { x: 0, y: 0 },
+  primaryGradientEnd: { x: 1, y: 0 },
+  text: '#FFFFFF',
+  textSecondary: 'rgba(255,255,255,0.6)',
+  textMuted: 'rgba(255,255,255,0.3)',
+  statusLive: '#02C121',
+  statusPending: '#FE6A00',
+  statusRejected: '#F20000',
+  statusRevise: '#874FE1',
+  success: '#22C55E',
+  error: '#EF4444',
+  warning: '#F59E0B',
+  overlay: 'rgba(0,0,0,0.6)',
+  kycBorder: '#874FE1',
+};
+
+export const StatusColors: Record<string, string> = {
+  live: Colors.statusLive,
+  pending: Colors.statusPending,
+  rejected: Colors.statusRejected,
+  revise: Colors.statusRevise,
+};
