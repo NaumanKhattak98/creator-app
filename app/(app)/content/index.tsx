@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
   },
   companyLogo: { width: 24, height: 24, borderRadius: 6 },
 
-  searchWrap: { paddingHorizontal: 12, marginBottom: 6 },
+  searchWrap: { paddingHorizontal: 12, marginTop: 8, marginBottom: 6 },
   searchBox: {
     flexDirection: 'row', alignItems: 'center',
     borderWidth: 1, borderColor: 'rgba(182,182,182,0.3)',

@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
 
   searchWrap: {
     flexDirection: 'row', alignItems: 'center',
-    marginHorizontal: 16, marginBottom: 8,
+    marginHorizontal: 16, marginTop: 8, marginBottom: 8,
     borderWidth: 1, borderColor: 'rgba(182,182,182,0.3)',
     borderRadius: 12, paddingHorizontal: 12,
     paddingTop: 8, paddingBottom: 7,

@@ -47,7 +47,7 @@ function CustomTabBar({ state, navigation }: BottomTabBarProps) {
         return (
           <TouchableOpacity
             key={route.key}
-            style={[styles.tab, { opacity: isFocused ? 1 : 0.4 }]}
+            style={[styles.tab, { opacity: isFocused ? 1 : 0.4 }, index === 1 && styles.tabMiddle]}
             onPress={onPress}
             activeOpacity={0.8}
           >
@@ -80,6 +80,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 4,
     paddingBottom: 2,
+  },
+  tabMiddle: {
+    marginHorizontal: 8,
   },
   label: {
     color: '#fff',
