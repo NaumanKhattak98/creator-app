@@ -7,6 +7,7 @@ import {
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import * as VideoThumbnails from 'expo-video-thumbnails';
+import VideoPreview from '../../../components/VideoPreview';
 import { CloseSquare, TickSquare, CloseCircle, Add, AddCircle, ArrowLeft2, ArrowDown2, ArrowUp2, CloudAdd, Link2, Lock, Headphone, Sms, Calendar1, Call, DocumentText1, ShoppingCart } from 'iconsax-react-native';
 
 const CTA_ICON_MAP: Record<string, React.ComponentType<any>> = {
@@ -662,22 +663,27 @@ export default function UploadScreen() {
 
           {/* Video picker */}
           <View style={styles.thumbArea}>
-            <TouchableOpacity onPress={pickVideo} style={styles.thumbContainer}>
-              {thumbnail ? (
-                <>
-                  <Image source={{ uri: thumbnail }} style={styles.thumbImage} resizeMode="cover" />
-                  <View style={styles.replaceOverlay}>
-                    <Text style={styles.replaceText}>Replace</Text>
-                  </View>
-                </>
-              ) : (
+            {videoUri ? (
+              /* Video auto-plays muted; tap video = mute toggle, tap Replace = re-pick */
+              <View style={styles.thumbContainer}>
+                <VideoPreview
+                  uri={videoUri}
+                  poster={thumbnail}
+                  style={styles.thumbImage}
+                />
+                <TouchableOpacity style={styles.replaceOverlay} onPress={pickVideo}>
+                  <Text style={styles.replaceText}>Replace</Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <TouchableOpacity onPress={pickVideo} style={styles.thumbContainer}>
                 <View style={styles.thumbEmpty}>
                   <CloudAdd size={36} color={Colors.primary} variant="Linear" />
                   <Text style={styles.thumbHint}>Tap to select</Text>
                   <Text style={styles.thumbSub}>Vertical 9:16 · Shorts only</Text>
                 </View>
-              )}
-            </TouchableOpacity>
+              </TouchableOpacity>
+            )}
           </View>
 
           {/* Title */}

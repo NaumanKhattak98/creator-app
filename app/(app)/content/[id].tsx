@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  Image, Share,
+  Share,
 } from 'react-native';
+import VideoPreview from '../../../components/VideoPreview';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ArrowLeft2, DollarCircle, Eye, Heart, Message, ArrowRotateRight, Clock, People, UserAdd } from 'iconsax-react-native';
@@ -109,14 +110,13 @@ export default function AnalyticsScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scroll}
       >
-        {/* Portrait Thumbnail */}
+        {/* Portrait video preview */}
         <View style={styles.thumbWrap}>
-          <Image
-            source={{ uri: video.thumbnailUrl }}
+          <VideoPreview
+            uri={video.videoUrl}
+            poster={video.thumbnailUrl}
             style={styles.thumb}
-            resizeMode="cover"
           />
-          <View style={styles.thumbGradient} />
         </View>
 
         {/* Title & Description */}

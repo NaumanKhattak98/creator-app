@@ -6,6 +6,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
+import VideoPreview from '../../../../components/VideoPreview';
 import { ArrowLeft2, ArrowUp2, ArrowDown2, CloseCircle, Add, Headphone, Link2, DocumentText1 } from 'iconsax-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../../../../constants/colors';
@@ -100,12 +101,16 @@ export default function EditVideoScreen() {
 
         {/* Thumbnail */}
         <View style={styles.thumbArea}>
-          <TouchableOpacity onPress={replaceThumbnail} style={styles.thumbContainer}>
-            <Image source={{ uri: thumbnail }} style={styles.thumbImage} resizeMode="cover" />
-            <View style={styles.replaceOverlay}>
+          <View style={styles.thumbContainer}>
+            <VideoPreview
+              uri={video.videoUrl}
+              poster={thumbnail}
+              style={styles.thumbImage}
+            />
+            <TouchableOpacity style={styles.replaceOverlay} onPress={replaceThumbnail}>
               <Text style={styles.replaceText}>Replace</Text>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Title */}
