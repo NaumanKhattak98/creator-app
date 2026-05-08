@@ -97,29 +97,6 @@ export default function SettingsScreen() {
         contentContainerStyle={styles.scroll}
         showsVerticalScrollIndicator={false}
       >
-        {/* ── KYC Card ── */}
-        <TouchableOpacity
-          style={[styles.kycCard, user.kycCompleted && styles.kycCardDone]}
-          onPress={() => router.push('/(app)/profile/settings/kyc')}
-          activeOpacity={0.8}
-        >
-          <View style={styles.kycLeft}>
-            <Text style={styles.kycText}>
-              {user.kycCompleted
-                ? 'Your identity has been verified successfully.'
-                : 'Complete the KYC process so you can withdraw your earnings'}
-            </Text>
-          </View>
-          <View style={styles.kycRight}>
-            <View style={styles.kycIconCard}>
-              {user.kycCompleted
-                ? <ShieldTick size={28} color="#22C55E" variant="Linear" />
-                : <Card size={28} color={Colors.primary} variant="Linear" />
-              }
-            </View>
-          </View>
-        </TouchableOpacity>
-
         {/* ── Menu Rows ── */}
         <SettingsRow
           icon="flag-outline"

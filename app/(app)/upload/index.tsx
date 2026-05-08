@@ -501,13 +501,6 @@ export default function UploadScreen() {
   const [loading, setLoading] = useState(false);
 
   const pickVideo = async () => {
-    if (!user?.kycCompleted) {
-      Alert.alert('KYC Required', 'Complete identity verification before uploading.', [
-        { text: 'Go to Settings', onPress: () => router.push('/(app)/profile/settings') },
-        { text: 'Cancel', style: 'cancel' },
-      ]);
-      return;
-    }
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Videos,
       quality: 1,

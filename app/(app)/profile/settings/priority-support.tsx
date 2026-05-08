@@ -51,22 +51,6 @@ export default function PrioritySupportScreen() {
           </Text>
         </LinearGradient>
 
-        {/* KYC gate */}
-        {!user?.kycCompleted && (
-          <TouchableOpacity
-            style={styles.kycGate}
-            onPress={() => router.push('/(app)/profile/settings/kyc')}
-            activeOpacity={0.8}
-          >
-            <Shield size={20} color={Colors.primary} variant="Linear" />
-            <View style={{ flex: 1 }}>
-              <Text style={styles.kycTitle}>KYC Required</Text>
-              <Text style={styles.kycSub}>Complete identity verification to unlock priority support</Text>
-            </View>
-            <ArrowRight2 size={16} color={Colors.primary} variant="Linear" />
-          </TouchableOpacity>
-        )}
-
         {/* Benefits */}
         <Text style={styles.sectionLabel}>What's Included</Text>
         {BENEFITS.map((b, i) => (
@@ -81,23 +65,17 @@ export default function PrioritySupportScreen() {
         {/* Contact */}
         <Text style={styles.sectionLabel}>Get in Touch</Text>
         <TouchableOpacity
-          style={[styles.contactBtn, !user?.kycCompleted && styles.contactBtnDisabled]}
-          onPress={() =>
-            user?.kycCompleted
-              ? Linking.openURL('mailto:priority@creatorportal.io')
-              : router.push('/(app)/profile/settings/kyc')
-          }
+          style={styles.contactBtn}
+          onPress={() => Linking.openURL('mailto:priority@creatorportal.io')}
           activeOpacity={0.8}
         >
           <LinearGradient
-            colors={user?.kycCompleted ? ['#874FE1', '#100D5B'] : ['#555', '#333']}
+            colors={['#874FE1', '#100D5B']}
             start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
             style={styles.contactBtnGrad}
           >
             <Headphone size={20} color="#fff" variant="Linear" />
-            <Text style={styles.contactBtnText}>
-              {user?.kycCompleted ? 'Contact Priority Support' : 'Complete KYC to Unlock'}
-            </Text>
+            <Text style={styles.contactBtnText}>Contact Priority Support</Text>
           </LinearGradient>
         </TouchableOpacity>
       </ScrollView>

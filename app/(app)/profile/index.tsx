@@ -253,9 +253,6 @@ export default function ProfileScreen() {
         <View style={styles.identity}>
           <View style={styles.nameRow}>
             <Text style={styles.name}>{user.name}</Text>
-            {user.kycCompleted && (
-              <TickCircle size={18} color="#5B9FED" variant="Linear" style={{ marginLeft: 4 }} />
-            )}
           </View>
           {user.bio ? (
             <Text style={styles.bio}>
@@ -300,17 +297,6 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* KYC notice */}
-        {!user.kycCompleted && (
-          <TouchableOpacity
-            style={styles.kycBanner}
-            onPress={() => router.push('/(app)/profile/settings/kyc')}
-          >
-            <Shield size={18} color={Colors.primary} variant="Linear" />
-            <Text style={styles.kycBannerText}>Complete KYC to start uploading</Text>
-            <ArrowRight2 size={16} color={Colors.primary} variant="Linear" />
-          </TouchableOpacity>
-        )}
 
         {/* Video Grid */}
         <View style={styles.gridSection}>
