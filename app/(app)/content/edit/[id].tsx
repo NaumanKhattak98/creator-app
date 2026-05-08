@@ -154,7 +154,7 @@ export default function EditVideoScreen() {
                     onPress={() => toggleTag(tag)}
                   >
                     <Text style={styles.tagChipText}>{tag.label}</Text>
-                    <CloseCircle size={18} color="rgba(0,0,0,0.4)" variant="Linear" />
+                    <CloseCircle size={18} color="rgba(0,0,0,0.4)" variant="Bulk" />
                   </TouchableOpacity>
                 ))}
                 <TouchableOpacity
@@ -183,7 +183,7 @@ export default function EditVideoScreen() {
                     <Text style={styles.ctaActiveBtnText}>{ctaLabel || 'CTA Button'}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => { setCtaType(''); setCtaLabel(''); setCtaUrl(''); }}>
-                    <CloseCircle size={24} color={Colors.error} variant="Linear" />
+                    <CloseCircle size={24} color={Colors.error} variant="Bulk" />
                   </TouchableOpacity>
                 </View>
               ) : (

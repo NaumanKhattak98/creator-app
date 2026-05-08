@@ -8,7 +8,7 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import * as ImagePicker from 'expo-image-picker';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import VideoPreview from '../../../components/VideoPreview';
-import { CloseSquare, TickSquare, CloseCircle, Add, AddCircle, ArrowLeft2, ArrowDown2, ArrowUp2, CloudAdd, Link2, Lock, Headphone, Sms, Calendar1, Call, DocumentText1, ShoppingCart } from 'iconsax-react-native';
+import { TickSquare, CloseCircle, Add, AddCircle, ArrowLeft2, ArrowDown2, ArrowUp2, CloudAdd, Link2, Lock, Headphone, Sms, Calendar1, Call, DocumentText1, ShoppingCart } from 'iconsax-react-native';
 
 const CTA_ICON_MAP: Record<string, React.ComponentType<any>> = {
   'headset-outline': Headphone,
@@ -92,8 +92,8 @@ function CTAPickerSheet({
           {/* Header */}
           <View style={cs.header}>
             <Text style={cs.title}>Select Conversion</Text>
-            <TouchableOpacity style={cs.closeBtn} onPress={onClose} activeOpacity={0.7}>
-              <CloseSquare size={20} color={Colors.text} variant="Linear" />
+            <TouchableOpacity onPress={onClose} activeOpacity={0.7}>
+              <CloseCircle size={32} color={Colors.text} variant="Bulk" />
             </TouchableOpacity>
           </View>
 
@@ -147,11 +147,6 @@ const cs = StyleSheet.create({
     paddingHorizontal: 20, paddingBottom: 14,
   },
   title: { color: Colors.text, fontSize: 18, fontWeight: '700' },
-  closeBtn: {
-    width: 32, height: 32, borderRadius: 16,
-    backgroundColor: Colors.surfaceMedium,
-    alignItems: 'center', justifyContent: 'center',
-  },
   divider: { height: 1, backgroundColor: Colors.border, marginBottom: 12 },
   list: { paddingHorizontal: 16, gap: 12, paddingBottom: 8 },
 
@@ -223,7 +218,7 @@ function TagPickerSheet({
           <View style={tp.header}>
             <Text style={tp.title}>{title}</Text>
             <TouchableOpacity style={tp.closeBtn} onPress={onClose} activeOpacity={0.7}>
-              <CloseSquare size={20} color={Colors.text} variant="Linear" />
+              <CloseCircle size={20} color={Colors.text} variant="Bulk" />
             </TouchableOpacity>
           </View>
 
@@ -357,7 +352,7 @@ function TagCategoryPickerSheet({
           <View style={tc.header}>
             <Text style={tc.title}>Select Tag Categories</Text>
             <TouchableOpacity style={tc.closeBtn} onPress={onClose} activeOpacity={0.7}>
-              <CloseSquare size={20} color={Colors.text} variant="Linear" />
+              <CloseCircle size={20} color={Colors.text} variant="Bulk" />
             </TouchableOpacity>
           </View>
 
@@ -676,7 +671,7 @@ export default function UploadScreen() {
                 </TouchableOpacity>
               </View>
             ) : (
-              <TouchableOpacity onPress={pickVideo} style={styles.thumbContainer}>
+              <TouchableOpacity onPress={pickVideo} style={styles.thumbEmptyContainer}>
                 <View style={styles.thumbEmpty}>
                   <CloudAdd size={36} color={Colors.primary} variant="Linear" />
                   <Text style={styles.thumbHint}>Tap to select</Text>
@@ -735,7 +730,7 @@ export default function UploadScreen() {
                         onPress={() => toggleTag(tag)}
                       >
                         <Text style={styles.tagChipText}>{tag.label}</Text>
-                        <CloseCircle size={18} color="rgba(0,0,0,0.4)" variant="Linear" />
+                        <CloseCircle size={18} color="rgba(0,0,0,0.4)" variant="Bulk" />
                       </TouchableOpacity>
                     ))}
 
@@ -745,7 +740,7 @@ export default function UploadScreen() {
                       onPress={() => setTagPickerVisible(true)}
                       activeOpacity={0.7}
                     >
-                      <Add size={20} color={Colors.primary} variant="Linear" />
+                      <Add size={20} color="#fff" variant="Linear" />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -762,7 +757,7 @@ export default function UploadScreen() {
                       <View style={[styles.catColorDot, { backgroundColor: category.color }]} />
                       <Text style={styles.catBlockName}>{category.name}</Text>
                       <TouchableOpacity onPress={() => removeCategory(category.id)} activeOpacity={0.7}>
-                        <CloseCircle size={20} color={Colors.textMuted} variant="Linear" />
+                        <CloseCircle size={20} color={Colors.textMuted} variant="Bulk" />
                       </TouchableOpacity>
                     </View>
 
@@ -777,7 +772,7 @@ export default function UploadScreen() {
                             onPress={() => toggleCategoryTag(category.id, tag.id)}
                           >
                             <Text style={styles.tagChipText}>{tag.label}</Text>
-                            <CloseCircle size={18} color="rgba(0,0,0,0.4)" variant="Linear" />
+                            <CloseCircle size={18} color="rgba(0,0,0,0.4)" variant="Bulk" />
                           </TouchableOpacity>
                         ))}
 
@@ -787,7 +782,7 @@ export default function UploadScreen() {
                         onPress={() => setEditingCategoryId(category.id)}
                         activeOpacity={0.7}
                       >
-                        <Add size={20} color={Colors.primary} variant="Linear" />
+                        <Add size={20} color="#fff" variant="Linear" />
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -832,7 +827,7 @@ export default function UploadScreen() {
                         activeOpacity={0.7}
                         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                       >
-                        <CloseSquare size={16} color={Colors.textMuted} variant="Linear" />
+                        <CloseCircle size={16} color={Colors.textMuted} variant="Bulk" />
                       </TouchableOpacity>
                     </View>
                   ) : (
@@ -978,10 +973,16 @@ const styles = StyleSheet.create({
     width: 145, height: 250, borderRadius: 10,
     overflow: 'hidden', backgroundColor: Colors.surfaceElevated,
   },
+  thumbEmptyContainer: {
+    width: 145, height: 250, borderRadius: 14,
+    backgroundColor: `${Colors.primary}12`,
+    borderWidth: 1.5, borderColor: Colors.primary,
+    borderStyle: 'dashed',
+  },
   thumbImage: { width: '100%', height: '100%' },
-  thumbEmpty: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 8 },
-  thumbHint: { color: Colors.text, fontSize: 13, fontWeight: '500' },
-  thumbSub: { color: Colors.textMuted, fontSize: 11 },
+  thumbEmpty: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 8, padding: 16 },
+  thumbHint: { color: Colors.text, fontSize: 13, fontWeight: '500', textAlign: 'center' },
+  thumbSub: { color: Colors.textMuted, fontSize: 11, textAlign: 'center' },
   replaceOverlay: {
     position: 'absolute', bottom: 8, right: 8,
     backgroundColor: 'rgba(0,0,0,0.7)', borderRadius: 8,
@@ -1012,10 +1013,9 @@ const styles = StyleSheet.create({
   },
   tagChipText: { color: '#000', fontSize: 13 },
   tagAddBtn: {
-    width: 32, height: 32, borderRadius: 16,
-    backgroundColor: `${Colors.primary}20`,
+    width: 32, height: 32, borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,0.1)',
     alignItems: 'center', justifyContent: 'center',
-    borderWidth: 1, borderColor: `${Colors.primary}50`,
   },
   fieldLabel: {
     color: Colors.textSecondary, fontSize: 12, fontWeight: '600',

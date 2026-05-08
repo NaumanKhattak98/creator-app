@@ -1,7 +1,7 @@
 import React from 'react';
 import { Tabs, useSegments } from 'expo-router';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
-import { Bag2, AddCircle, ProfileCircle } from 'iconsax-react-native';
+import { VideoPlay, AddCircle, ProfileCircle } from 'iconsax-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useAuthStore } from '../../store/authStore';
@@ -18,7 +18,7 @@ function CustomTabBar({ state, navigation }: BottomTabBarProps) {
   if (isUpload || isChildScreen) return null;
 
   const TAB_CONFIG = [
-    { name: 'content', label: 'Content', Icon: Bag2 },
+    { name: 'content', label: 'Content', Icon: VideoPlay },
     { name: 'upload',  label: 'Upload',  Icon: AddCircle },
     { name: 'profile', label: 'Profile', Icon: ProfileCircle },
   ];

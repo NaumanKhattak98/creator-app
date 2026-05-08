@@ -156,10 +156,12 @@ function ContentItem({
         onPress={onPress}
       >
         {/* Thumbnail */}
-        <View style={item.thumbWrap}>
-          <Image source={{ uri: video.thumbnailUrl }} style={item.thumb} resizeMode="cover" />
-          <View style={item.durationBadge}>
-            <Text style={item.durationText}>{formatDuration(video.duration)}</Text>
+        <View style={item.thumbOuter}>
+          <View style={item.thumbWrap}>
+            <Image source={{ uri: video.thumbnailUrl }} style={item.thumb} resizeMode="cover" />
+            <View style={item.durationBadge}>
+              <Text style={item.durationText}>{formatDuration(video.duration)}</Text>
+            </View>
           </View>
         </View>
 
@@ -207,24 +209,30 @@ const item = StyleSheet.create({
     paddingVertical: 12, gap: 12,
     borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.08)',
   },
-  thumbWrap: {
-    width: 104, height: 84, borderRadius: 6, overflow: 'hidden',
+  thumbOuter: {
+    width: 104, height: 84, borderRadius: 8,
     backgroundColor: Colors.surfaceElevated,
+    alignItems: 'center', justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  thumbWrap: {
+    width: 48, height: 184, borderRadius: 8, overflow: 'hidden',
+    backgroundColor: Colors.surfaceMedium,
   },
   thumb: { width: '100%', height: '100%' },
   durationBadge: {
-    position: 'absolute', top: 4, right: 4,
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    paddingHorizontal: 5, paddingVertical: 2, borderRadius: 4,
+    position: 'absolute', top: 6, right: 6,
+    backgroundColor: 'rgba(0,0,0,0.72)',
+    paddingHorizontal: 7, paddingVertical: 3, borderRadius: 20,
   },
-  durationText: { color: '#fff', fontSize: 10, fontWeight: '500' },
+  durationText: { color: '#fff', fontSize: 11, fontWeight: '600' },
   info: { flex: 1, gap: 2 },
   metaRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 3 },
   companyLogo: { width: 24, height: 24, borderRadius: 8 },
   statusText: { fontSize: 12, fontWeight: '500' },
   title: { color: Colors.text, fontSize: 14, fontWeight: '600' },
   description: { color: 'rgba(255,255,255,0.55)', fontSize: 12, lineHeight: 17 },
-  moreBtn: { paddingHorizontal: 4 },
+  moreBtn: { paddingHorizontal: 4, paddingTop: 2, transform: [{ rotate: '90deg' }] },
 });
 
 /* ─── Empty State ─── */

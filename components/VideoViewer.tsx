@@ -252,7 +252,9 @@ function VideoPage({
             }
           </TouchableOpacity>
           <TouchableOpacity style={p.topBtn} onPress={() => setMoreVisible(true)} activeOpacity={0.8}>
-            <More size={22} color="#fff" variant="Linear" />
+            <View style={{ transform: [{ rotate: '90deg' }] }}>
+              <More size={22} color="#fff" variant="Linear" />
+            </View>
           </TouchableOpacity>
         </View>
       </View>

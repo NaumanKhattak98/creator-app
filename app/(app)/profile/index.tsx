@@ -467,6 +467,7 @@ const styles = StyleSheet.create({
     width: 26, height: 26, borderRadius: 13,
     backgroundColor: 'rgba(0,0,0,0.55)',
     alignItems: 'center', justifyContent: 'center',
+    transform: [{ rotate: '90deg' }],
   },
 
   /* Empty grid */

@@ -33,6 +33,10 @@ const NOTIFICATION_ICON_MAP: Record<string, React.ComponentType<any>> = {
   'cloud-upload-outline': CloudAdd,
 };
 
+const NOTIFICATION_ICON_VARIANT: Record<string, string> = {
+  'close-circle-outline': 'Bulk',
+};
+
 const NOTIFICATIONS: Notification[] = [
   {
     id: '1', icon: 'document-outline', iconColor: '#02C121', iconBg: 'rgba(2,193,33,0.1)',
@@ -118,7 +122,7 @@ export default function NotificationsScreen() {
         renderItem={({ item }) => (
           <View style={styles.notifRow}>
             <View style={[styles.iconBox, { backgroundColor: item.iconBg }]}>
-              {(() => { const NIcon = NOTIFICATION_ICON_MAP[item.icon]; return NIcon ? <NIcon size={22} color={item.iconColor} variant="Linear" /> : null; })()}
+              {(() => { const NIcon = NOTIFICATION_ICON_MAP[item.icon]; return NIcon ? <NIcon size={22} color={item.iconColor} variant={NOTIFICATION_ICON_VARIANT[item.icon] ?? 'Linear'} /> : null; })()}
             </View>
             <View style={styles.notifText}>
               {item.company && (
