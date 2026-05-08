@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
+import * as VideoThumbnails from 'expo-video-thumbnails';
 import { CloseSquare, TickSquare, CloseCircle, Add, AddCircle, ArrowLeft2, ArrowDown2, ArrowUp2, CloudAdd, Link2, Lock, Headphone, Sms, Calendar1, Call, DocumentText1, ShoppingCart } from 'iconsax-react-native';
 
 const CTA_ICON_MAP: Record<string, React.ComponentType<any>> = {
@@ -506,8 +507,14 @@ export default function UploadScreen() {
       quality: 1,
     });
     if (!result.canceled) {
-      setVideoUri(result.assets[0].uri);
-      setThumbnail(`https://picsum.photos/seed/${Date.now()}/400/720`);
+      const uri = result.assets[0].uri;
+      setVideoUri(uri);
+      try {
+        const { uri: frameUri } = await VideoThumbnails.getThumbnailAsync(uri, { time: 0 });
+        setThumbnail(frameUri);
+      } catch {
+        setThumbnail('');
+      }
     }
   };
 
@@ -561,7 +568,7 @@ export default function UploadScreen() {
       id: `v${Date.now()}`,
       title,
       description,
-      thumbnailUrl: thumbnail || `https://picsum.photos/seed/${Date.now()}/400/720`,
+      thumbnailUrl: thumbnail,
       videoUrl: videoUri || 'https://www.w3schools.com/html/mov_bbb.mp4',
       status: 'pending',
       tags: [
