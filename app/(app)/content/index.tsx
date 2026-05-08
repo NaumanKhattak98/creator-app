@@ -247,6 +247,25 @@ function EmptyState() {
   );
 }
 
+/* ─── No Search Results ─── */
+function NoSearchResults({ term, onClear }: { term: string; onClear: () => void }) {
+  return (
+    <View style={styles.empty}>
+      <View style={styles.emptyIcon}>
+        <SearchNormal1 size={28} color={Colors.textMuted} variant="Linear" />
+      </View>
+      <Text style={styles.emptyTitle}>No results found</Text>
+      <Text style={styles.emptyHint}>
+        No content available for{' '}
+        <Text style={styles.emptyHighlight}>&ldquo;{term}&rdquo;</Text>
+      </Text>
+      <TouchableOpacity style={styles.emptyBtn} onPress={onClear}>
+        <Text style={styles.emptyBtnText}>Clear Search</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
 /* ─── Main Screen ─── */
 export default function ContentScreen() {
   const { user, switchWorkspace } = useAuthStore();
@@ -351,6 +370,8 @@ export default function ContentScreen() {
         <View style={styles.center}>
           <Text style={{ color: Colors.textSecondary }}>Loading…</Text>
         </View>
+      ) : filtered.length === 0 && search.trim() ? (
+        <NoSearchResults term={search.trim()} onClear={() => setSearch('')} />
       ) : filtered.length === 0 ? (
         <EmptyState />
       ) : (
@@ -449,4 +470,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 36, paddingVertical: 10, borderRadius: 20,
   },
   emptyBtnText: { color: Colors.primary, fontSize: 14, fontWeight: '600' },
+  emptyHighlight: { color: Colors.text, fontWeight: '600' },
 });
