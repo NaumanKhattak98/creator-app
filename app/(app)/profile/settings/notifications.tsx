@@ -21,6 +21,7 @@ type Notification = {
   message: string;
   boldName?: string;
   type: NotifFilter;
+  dateGroup: 'Today' | 'Yesterday' | 'This Week';
 };
 
 const NOTIFICATION_ICON_MAP: Record<string, React.ComponentType<any>> = {
@@ -41,39 +42,41 @@ const NOTIFICATIONS: Notification[] = [
   {
     id: '1', icon: 'document-outline', iconColor: '#02C121', iconBg: 'rgba(2,193,33,0.1)',
     company: 'Kayak', message: 'Your upload was approved and is Live',
-    type: 'Listings',
+    type: 'Listings', dateGroup: 'Today',
   },
   {
     id: '2', icon: 'trending-up-outline', iconColor: '#02C121', iconBg: 'rgba(2,193,33,0.1)',
     company: 'Mindmatrix', message: 'Your upload is getting attention!',
-    type: 'Analysis',
+    type: 'Analysis', dateGroup: 'Today',
   },
   {
     id: '3', icon: 'close-circle-outline', iconColor: '#F20000', iconBg: 'rgba(242,0,0,0.1)',
     company: 'Kayak', message: 'Your upload was rejected',
-    type: 'Listings',
+    type: 'Listings', dateGroup: 'Yesterday',
   },
   {
     id: '4', icon: 'refresh-circle-outline', iconColor: '#FD8C1B', iconBg: 'rgba(253,140,27,0.1)',
     company: 'Kayak', message: 'Your upload requires a revision',
-    type: 'Listings',
+    type: 'Listings', dateGroup: 'Yesterday',
   },
   {
     id: '5', icon: 'wallet-outline', iconColor: '#02C121', iconBg: 'rgba(2,193,33,0.1)',
     company: 'Kayak', message: 'You have initiated a withdrawal of $1900',
-    type: 'Subscriptions',
+    type: 'Subscriptions', dateGroup: 'This Week',
   },
   {
     id: '6', icon: 'cash-outline', iconColor: '#02C121', iconBg: 'rgba(2,193,33,0.1)',
     message: 'You earnings are growing!', boldName: 'Chris Bukard',
-    type: 'Analysis',
+    type: 'Analysis', dateGroup: 'This Week',
   },
   {
     id: '7', icon: 'cloud-upload-outline', iconColor: '#02C121', iconBg: 'rgba(2,193,33,0.1)',
     message: 'Upload more content to boost your earnings', boldName: 'Chris Bukard',
-    type: 'Jobs',
+    type: 'Jobs', dateGroup: 'This Week',
   },
 ];
+
+const DATE_GROUPS = ['Today', 'Yesterday', 'This Week'] as const;
 
 export default function NotificationsScreen() {
   const router = useRouter();
@@ -82,6 +85,11 @@ export default function NotificationsScreen() {
   const filtered = active === 'All'
     ? NOTIFICATIONS
     : NOTIFICATIONS.filter(n => n.type === active);
+
+  // Group by date
+  const grouped = DATE_GROUPS
+    .map(group => ({ group, items: filtered.filter(n => n.dateGroup === group) }))
+    .filter(g => g.items.length > 0);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -113,26 +121,31 @@ export default function NotificationsScreen() {
         ))}
       </ScrollView>
 
-      {/* Notifications list */}
+      {/* Notifications grouped by date */}
       <FlatList
-        data={filtered}
-        keyExtractor={n => n.id}
+        data={grouped}
+        keyExtractor={g => g.group}
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <View style={styles.notifRow}>
-            <View style={[styles.iconBox, { backgroundColor: item.iconBg }]}>
-              {(() => { const NIcon = NOTIFICATION_ICON_MAP[item.icon]; return NIcon ? <NIcon size={22} color={item.iconColor} variant={NOTIFICATION_ICON_VARIANT[item.icon] ?? 'Linear'} /> : null; })()}
-            </View>
-            <View style={styles.notifText}>
-              {item.company && (
-                <Text style={styles.companyName}>{item.company}</Text>
-              )}
-              <Text style={styles.message}>{item.message}</Text>
-              {item.boldName && (
-                <Text style={styles.boldName}>{item.boldName}</Text>
-              )}
-            </View>
+        renderItem={({ item: group }) => (
+          <View>
+            <Text style={styles.dateHeader}>{group.group}</Text>
+            {group.items.map(item => (
+              <View key={item.id} style={styles.notifRow}>
+                <View style={[styles.iconBox, { backgroundColor: item.iconBg }]}>
+                  {(() => { const NIcon = NOTIFICATION_ICON_MAP[item.icon]; return NIcon ? <NIcon size={22} color={item.iconColor} variant={NOTIFICATION_ICON_VARIANT[item.icon] ?? 'Linear'} /> : null; })()}
+                </View>
+                <View style={styles.notifText}>
+                  {item.company && (
+                    <Text style={styles.companyName}>{item.company}</Text>
+                  )}
+                  <Text style={styles.message}>{item.message}</Text>
+                  {item.boldName && (
+                    <Text style={styles.boldName}>{item.boldName}</Text>
+                  )}
+                </View>
+              </View>
+            ))}
           </View>
         )}
       />
@@ -164,6 +177,11 @@ const styles = StyleSheet.create({
   chipTextActive: { color: '#000' },
 
   list: { paddingHorizontal: 16, paddingBottom: 24 },
+  dateHeader: {
+    color: Colors.textMuted, fontSize: 12, fontWeight: '600',
+    textTransform: 'uppercase', letterSpacing: 0.8,
+    marginTop: 16, marginBottom: 4,
+  },
   notifRow: {
     flexDirection: 'row', alignItems: 'flex-start',
     paddingVertical: 8, gap: 12,

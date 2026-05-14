@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import {
   View, Text, StyleSheet, FlatList, TouchableOpacity,
   Alert, Image, Modal, Pressable,
-  TextInput, ScrollView, Share,
+  TextInput, ScrollView, Share, RefreshControl, Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Edit2, ChartSquare, Link2, Trash, ArrowRight2, More, ArrowDown2, SearchNormal1, PlayCircle } from 'iconsax-react-native';
 import { useRouter } from 'expo-router';
+import * as Haptics from 'expo-haptics';
 import { Colors } from '../../../constants/colors';
 import { useAuthStore } from '../../../store/authStore';
 import { useContentStore } from '../../../store/contentStore';
@@ -235,6 +236,46 @@ const item = StyleSheet.create({
   moreBtn: { paddingHorizontal: 4, paddingTop: 2, transform: [{ rotate: '90deg' }] },
 });
 
+/* ─── Skeleton Loading Item ─── */
+function SkeletonItem() {
+  const anim = useRef(new Animated.Value(0.4)).current;
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(anim, { toValue: 1, duration: 700, useNativeDriver: true }),
+        Animated.timing(anim, { toValue: 0.4, duration: 700, useNativeDriver: true }),
+      ])
+    ).start();
+  }, []);
+  return (
+    <Animated.View style={[skel.row, { opacity: anim }]}>
+      <View style={skel.thumb} />
+      <View style={skel.info}>
+        <View style={skel.line} />
+        <View style={[skel.line, { width: '60%' }]} />
+        <View style={[skel.line, { width: '80%' }]} />
+      </View>
+    </Animated.View>
+  );
+}
+
+const skel = StyleSheet.create({
+  row: {
+    flexDirection: 'row', alignItems: 'center', gap: 12,
+    paddingVertical: 12,
+    borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.08)',
+  },
+  thumb: {
+    width: 104, height: 84, borderRadius: 8,
+    backgroundColor: Colors.surfaceElevated,
+  },
+  info: { flex: 1, gap: 8 },
+  line: {
+    height: 12, borderRadius: 6, width: '90%',
+    backgroundColor: Colors.surfaceElevated,
+  },
+});
+
 /* ─── Empty State ─── */
 function EmptyState() {
   const router = useRouter();
@@ -296,7 +337,19 @@ export default function ContentScreen() {
     return matchFilter && matchSearch;
   });
 
+  const getCount = (f: FilterType) =>
+    f === 'All' ? videos.length : videos.filter(v => v.status === f).length;
+
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (user?.activeWorkspaceId) await fetchVideos(user.activeWorkspaceId);
+    setRefreshing(false);
+  }, [user?.activeWorkspaceId]);
+
   const openViewer = (index: number) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setViewerIndex(index);
     setViewerVisible(true);
   };
@@ -359,24 +412,28 @@ export default function ContentScreen() {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.filterRow}
         >
-          {FILTERS.map(f => (
-            <TouchableOpacity
-              key={f}
-              style={[styles.filterChip, activeFilter === f && styles.filterChipActive]}
-              onPress={() => setActiveFilter(f)}
-            >
-              <Text style={[styles.filterLabel, activeFilter === f && styles.filterLabelActive]}>
-                {FILTER_LABELS[f]}
-              </Text>
-            </TouchableOpacity>
-          ))}
+          {FILTERS.map(f => {
+            const count = getCount(f);
+            const isActive = activeFilter === f;
+            return (
+              <TouchableOpacity
+                key={f}
+                style={[styles.filterChip, isActive && styles.filterChipActive]}
+                onPress={() => setActiveFilter(f)}
+              >
+                <Text style={[styles.filterLabel, isActive && styles.filterLabelActive]}>
+                  {FILTER_LABELS[f]}{count > 0 ? ` (${count})` : ''}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
         </ScrollView>
       </View>
 
       {/* Content list */}
       {isLoading ? (
-        <View style={styles.center}>
-          <Text style={{ color: Colors.textSecondary }}>Loading…</Text>
+        <View style={[styles.list, { marginTop: 8, paddingHorizontal: 16 }]}>
+          {[1,2,3,4].map(i => <SkeletonItem key={i} />)}
         </View>
       ) : filtered.length === 0 && search.trim() ? (
         <NoSearchResults term={search.trim()} onClear={() => setSearch('')} />
@@ -391,6 +448,14 @@ export default function ContentScreen() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor={Colors.primary}
+              colors={[Colors.primary]}
+            />
+          }
           renderItem={({ item: video, index }) => (
             <ContentItem
               video={video}

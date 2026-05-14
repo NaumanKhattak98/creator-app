@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import * as Haptics from 'expo-haptics';
 import {
   View, Text, StyleSheet, ScrollView, Image,
   TouchableOpacity, Dimensions, Alert, Modal, Pressable, Share,
@@ -125,7 +126,7 @@ function VideoGridItem({ video, onPress }: { video: Video; onPress: () => void }
 
   return (
     <>
-      <TouchableOpacity style={styles.gridItem} onPress={onPress} activeOpacity={0.8}>
+      <TouchableOpacity style={styles.gridItem} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onPress(); }} activeOpacity={0.8}>
         <View style={styles.gridThumbWrap}>
           <Image source={{ uri: video.thumbnailUrl }} style={styles.gridThumb} resizeMode="cover" />
 
@@ -317,15 +318,21 @@ export default function ProfileScreen() {
           {companyVideos.length === 0 ? (
             <View style={styles.emptyGrid}>
               <View style={styles.emptyIconWrap}>
-                <PlayCircle size={32} color={Colors.textMuted} variant="Linear" />
+                <Text style={{ fontSize: 36 }}>🎬</Text>
               </View>
-              <Text style={styles.emptyTitle}>No posts yet</Text>
-              <Text style={styles.emptyHint}>Upload content to an enterprise to start earning!</Text>
+              <Text style={styles.emptyTitle}>No content yet</Text>
+              <Text style={styles.emptyHint}>
+                Upload your first short video to start earning from this workspace.
+              </Text>
               <TouchableOpacity
                 style={styles.uploadBtn}
-                onPress={() => router.push('/(app)/upload')}
+                activeOpacity={0.85}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  router.push('/(app)/upload');
+                }}
               >
-                <Text style={styles.uploadBtnText}>Upload</Text>
+                <Text style={styles.uploadBtnText}>+ Upload Video</Text>
               </TouchableOpacity>
             </View>
           ) : (

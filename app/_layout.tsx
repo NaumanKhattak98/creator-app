@@ -4,28 +4,29 @@ import { StatusBar } from 'expo-status-bar';
 import { useAuthStore } from '../store/authStore';
 
 export default function RootLayout() {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, hasSeenOnboarding } = useAuthStore();
   const segments = useSegments();
   const router = useRouter();
   const [layoutMounted, setLayoutMounted] = useState(false);
 
-  // First effect: signals the navigator is mounted after the first render
   useEffect(() => {
     setLayoutMounted(true);
   }, []);
 
-  // Second effect: only runs after layoutMounted becomes true (second render cycle)
-  // By then the Stack navigator is fully registered and safe to navigate into
   useEffect(() => {
     if (!layoutMounted) return;
 
     const inAuth = segments[0] === '(auth)';
+    const inOnboarding = segments[0] === 'onboarding';
+
     if (!isAuthenticated && !inAuth) {
       router.replace('/(auth)');
-    } else if (isAuthenticated && inAuth) {
+    } else if (isAuthenticated && !hasSeenOnboarding && !inOnboarding) {
+      router.replace('/onboarding');
+    } else if (isAuthenticated && hasSeenOnboarding && (inAuth || inOnboarding)) {
       router.replace('/(app)/content');
     }
-  }, [isAuthenticated, segments, layoutMounted]);
+  }, [isAuthenticated, hasSeenOnboarding, segments, layoutMounted]);
 
   return (
     <>
@@ -33,6 +34,7 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#0D0D12' } }}>
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(app)" />
+        <Stack.Screen name="onboarding" />
       </Stack>
     </>
   );

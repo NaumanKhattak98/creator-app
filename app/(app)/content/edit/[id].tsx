@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import * as Haptics from 'expo-haptics';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
   Image, Alert,
@@ -65,6 +66,7 @@ export default function EditVideoScreen() {
 
   const handleSave = async () => {
     if (!title.trim()) { Alert.alert('Title required', 'Please enter a title.'); return; }
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setSaving(true);
     await new Promise((r) => setTimeout(r, 800));
     updateVideo(id, {
@@ -75,6 +77,7 @@ export default function EditVideoScreen() {
       cta: ctaType ? { id: video.cta?.id ?? `cta${Date.now()}`, type: ctaType as 'redirect' | 'file', label: ctaLabel, url: ctaUrl } : undefined,
     });
     setSaving(false);
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     Alert.alert('Saved!', 'Your changes have been saved.', [{ text: 'OK', onPress: () => router.back() }]);
   };
 

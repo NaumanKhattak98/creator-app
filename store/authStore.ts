@@ -4,6 +4,7 @@ import { MOCK_USER, MOCK_WORKSPACES } from '../constants/mock';
 
 interface AuthState {
   isAuthenticated: boolean;
+  hasSeenOnboarding: boolean;
   user: User | null;
   inviteCode: string;
   login: (email: string, password: string) => Promise<void>;
@@ -13,11 +14,13 @@ interface AuthState {
   setupProfile: (data: Partial<User>) => Promise<void>;
   switchWorkspace: (workspaceId: string) => void;
   updateUser: (data: Partial<User>) => void;
+  completeOnboarding: () => void;
   logout: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   isAuthenticated: false,
+  hasSeenOnboarding: false,
   user: null,
   inviteCode: '',
 
@@ -65,5 +68,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ user: { ...user, ...data } });
   },
 
-  logout: () => set({ isAuthenticated: false, user: null, inviteCode: '' }),
+  completeOnboarding: () => set({ hasSeenOnboarding: true }),
+  logout: () => set({ isAuthenticated: false, user: null, inviteCode: '', hasSeenOnboarding: false }),
 }));

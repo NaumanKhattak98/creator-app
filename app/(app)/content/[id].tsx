@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  Share,
+  Share, Animated,
 } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import VideoPreview from '../../../components/VideoPreview';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -90,7 +91,18 @@ export default function AnalyticsScreen() {
 
   const { analytics } = video;
 
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const switchFilter = useCallback((f: AnalyticsFilter) => {
+    Haptics.selectionAsync();
+    Animated.sequence([
+      Animated.timing(fadeAnim, { toValue: 0.3, duration: 120, useNativeDriver: true }),
+      Animated.timing(fadeAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
+    ]).start();
+    setFilter(f);
+  }, [fadeAnim]);
+
   const handleCopyLink = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     Share.share({ message: analytics.referralLink });
   };
 
@@ -131,7 +143,7 @@ export default function AnalyticsScreen() {
             <TouchableOpacity
               key={f}
               style={[styles.filterTab, filter === f && styles.filterTabActive]}
-              onPress={() => setFilter(f)}
+              onPress={() => switchFilter(f)}
             >
               <Text style={[styles.filterText, filter === f && styles.filterTextActive]}>
                 {f}
@@ -141,17 +153,17 @@ export default function AnalyticsScreen() {
         </View>
 
         {/* Stat Rows */}
-        <View style={styles.statsBlock}>
+        <Animated.View style={[styles.statsBlock, { opacity: fadeAnim }]}>
           <StatRow icon="logo-usd" label="Income" value={formatIncome(analytics.income)} />
           <StatRow icon="eye-outline" label="Views" value={formatNum(analytics.views)} />
           <StatRow icon="heart-outline" label="Likes" value={formatNum(analytics.likes)} />
           <StatRow icon="chatbubble-outline" label="Comments" value={formatNum(analytics.comments)} />
           <StatRow icon="arrow-redo-outline" label="Shares" value={formatNum(analytics.shares)} />
           <StatRow icon="time-outline" label="Watchtime" value={formatWatchTime(analytics.watchTime)} last />
-        </View>
+        </Animated.View>
 
         {/* Traffic & Referrals Card */}
-        <View style={styles.trafficCard}>
+        <Animated.View style={[styles.trafficCard, { opacity: fadeAnim }]}>
           {/* Total Traffic */}
           <View style={[stat.row, stat.rowBorder]}>
             <View style={stat.left}>
@@ -174,7 +186,7 @@ export default function AnalyticsScreen() {
             </View>
             <Text style={stat.value}>{formatNum(Math.floor(analytics.totalTraffic * 0.26))}</Text>
           </View>
-        </View>
+        </Animated.View>
 
         <View style={{ height: 40 }} />
       </ScrollView>

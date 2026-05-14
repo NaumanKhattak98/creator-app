@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import * as Haptics from 'expo-haptics';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
   Alert, Image, KeyboardAvoidingView, Platform, TextInput,
@@ -496,6 +497,8 @@ export default function UploadScreen() {
   const [selectedCta, setSelectedCta] = useState<CtaOption | null>(null);
   const [dynamicCtaUrl, setDynamicCtaUrl] = useState('');
   const [loading, setLoading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const pickVideo = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -553,13 +556,25 @@ export default function UploadScreen() {
     setCategoryEntries((prev) => prev.filter((e) => e.category.id !== categoryId));
   };
 
+  const resetForm = () => {
+    setVideoUri(''); setTitle(''); setDescription('');
+    setSelectedTags([]); setSelectedCta(null); setDynamicCtaUrl('');
+    setCategoryEntries([]); setThumbnail(''); setUploadProgress(0);
+  };
+
   const handleUpload = async () => {
     if (!title.trim()) {
       Alert.alert('Title required', 'Please enter a title.');
       return;
     }
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1200));
+    setUploadProgress(0);
+    // Simulate upload progress
+    for (let p = 10; p <= 90; p += 10) {
+      await new Promise((r) => setTimeout(r, 100));
+      setUploadProgress(p);
+    }
     addVideo({
       id: `v${Date.now()}`,
       title,
@@ -591,17 +606,11 @@ export default function UploadScreen() {
         weekly: [], monthly: [], yearly: [],
       },
     });
+    setUploadProgress(100);
+    await new Promise((r) => setTimeout(r, 200));
     setLoading(false);
-    Alert.alert('Uploaded!', 'Your video is pending review.', [
-      {
-        text: 'View Content',
-        onPress: () => {
-          setVideoUri(''); setTitle(''); setDescription('');
-          setSelectedTags([]); setSelectedCta(null); setDynamicCtaUrl(''); setCategoryEntries([]);
-          router.push('/(app)/content');
-        },
-      },
-    ]);
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    setShowSuccess(true);
   };
 
   const company = user?.workspaces.find((w) => w.id === user.activeWorkspaceId);
@@ -876,6 +885,12 @@ export default function UploadScreen() {
 
         {/* Footer */}
         <View style={styles.footer}>
+          {loading && (
+            <View style={styles.progressBarWrap}>
+              <View style={[styles.progressBarFill, { width: `${uploadProgress}%` }]} />
+              <Text style={styles.progressText}>{uploadProgress}%</Text>
+            </View>
+          )}
           <TouchableOpacity
             onPress={handleUpload}
             disabled={loading}
@@ -888,7 +903,7 @@ export default function UploadScreen() {
               end={{ x: 1, y: 0 }}
               style={styles.uploadBtn}
             >
-              <Text style={styles.uploadBtnText}>{loading ? 'Uploading…' : 'Upload Short'}</Text>
+              <Text style={styles.uploadBtnText}>{loading ? `Uploading… ${uploadProgress}%` : 'Upload Short'}</Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>
@@ -942,6 +957,44 @@ export default function UploadScreen() {
         initialSelected={categoryEntries.map((e) => e.category)}
         onConfirm={confirmCategories}
       />
+
+      {/* Success Modal */}
+      <Modal visible={showSuccess} transparent animationType="fade">
+        <View style={styles.successBackdrop}>
+          <View style={styles.successCard}>
+            <View style={styles.successIconWrap}>
+              <Text style={styles.successEmoji}>🎉</Text>
+            </View>
+            <Text style={styles.successTitle}>Upload Submitted!</Text>
+            <Text style={styles.successSub}>
+              Your video is now pending review. We'll notify you once it goes live.
+            </Text>
+            <TouchableOpacity
+              style={styles.successBtn}
+              activeOpacity={0.85}
+              onPress={() => {
+                setShowSuccess(false);
+                resetForm();
+                router.push('/(app)/content');
+              }}
+            >
+              <LinearGradient
+                colors={['#874FE1', '#100D5B']}
+                start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+                style={styles.successBtnGradient}
+              >
+                <Text style={styles.successBtnText}>View My Content</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.successSecondaryBtn}
+              onPress={() => { setShowSuccess(false); resetForm(); }}
+            >
+              <Text style={styles.successSecondaryText}>Upload Another</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -1112,4 +1165,45 @@ const styles = StyleSheet.create({
   uploadWrapper: { borderRadius: 12, overflow: 'hidden' },
   uploadBtn: { height: 48, alignItems: 'center', justifyContent: 'center', borderRadius: 12 },
   uploadBtnText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+
+  /* Progress bar */
+  progressBarWrap: {
+    height: 6, borderRadius: 3, backgroundColor: Colors.surfaceElevated,
+    marginBottom: 10, overflow: 'hidden', position: 'relative',
+  },
+  progressBarFill: {
+    height: '100%', borderRadius: 3,
+    backgroundColor: Colors.primary,
+  },
+  progressText: {
+    position: 'absolute', right: 0, top: -18,
+    color: Colors.primary, fontSize: 11, fontWeight: '600',
+  },
+
+  /* Success modal */
+  successBackdrop: {
+    flex: 1, backgroundColor: 'rgba(0,0,0,0.75)',
+    alignItems: 'center', justifyContent: 'center', padding: 24,
+  },
+  successCard: {
+    width: '100%', backgroundColor: '#13141f',
+    borderRadius: 24, padding: 28, alignItems: 'center', gap: 12,
+    borderWidth: 1, borderColor: 'rgba(135,79,225,0.3)',
+  },
+  successIconWrap: {
+    width: 72, height: 72, borderRadius: 36,
+    backgroundColor: `${Colors.primary}20`,
+    alignItems: 'center', justifyContent: 'center', marginBottom: 4,
+  },
+  successEmoji: { fontSize: 36 },
+  successTitle: { color: '#fff', fontSize: 22, fontWeight: '700', textAlign: 'center' },
+  successSub: {
+    color: 'rgba(255,255,255,0.6)', fontSize: 14,
+    textAlign: 'center', lineHeight: 21,
+  },
+  successBtn: { width: '100%', borderRadius: 12, overflow: 'hidden', marginTop: 8 },
+  successBtnGradient: { height: 48, alignItems: 'center', justifyContent: 'center' },
+  successBtnText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  successSecondaryBtn: { paddingVertical: 10 },
+  successSecondaryText: { color: Colors.primary, fontSize: 14, fontWeight: '500' },
 });
