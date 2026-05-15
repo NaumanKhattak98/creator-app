@@ -142,8 +142,8 @@ export default function SetupScreen() {
 const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: Colors.background },
   logoArea: {
-    flexDirection: 'row', alignItems: 'center',
-    paddingHorizontal: 24, paddingVertical: 28,
+    alignItems: 'center', justifyContent: 'center',
+    paddingHorizontal: 24, paddingVertical: 48,
   },
   scroll: { flexGrow: 1, paddingHorizontal: 24, paddingTop: 0, paddingBottom: 40, gap: 20 },
   back: { marginBottom: 8 },

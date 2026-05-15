@@ -335,8 +335,8 @@ const styles = StyleSheet.create({
 
   /* Logo header */
   logoArea: {
-    flexDirection: 'row', alignItems: 'center', gap: 12,
-    paddingHorizontal: 24, paddingVertical: 28,
+    alignItems: 'center', justifyContent: 'center',
+    paddingHorizontal: 24, paddingVertical: 48,
   },
   scroll: { paddingHorizontal: 16, paddingTop: 24, paddingBottom: 40, gap: 24 },
   backBtn: { marginBottom: 4 },
