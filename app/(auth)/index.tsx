@@ -122,7 +122,7 @@ export default function LoginScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: Colors.background },
-  scroll: { flexGrow: 1, paddingHorizontal: 24, paddingTop: 0, paddingBottom: 40, gap: 32 },
+  scroll: { flexGrow: 1, paddingHorizontal: 24, paddingTop: 32, paddingBottom: 40, gap: 32 },
   logoArea: {
     flexDirection: 'row', alignItems: 'center',
     paddingHorizontal: 24, paddingVertical: 28,
