@@ -54,7 +54,7 @@ export default function LoginScreen() {
       <LinearGradient
         colors={['rgba(75,8,109,0.10)', 'rgba(172,192,255,0.10)']}
         start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-        style={[styles.logoArea, { paddingTop: insets.top + 12 }]}
+        style={[styles.logoArea, { paddingTop: insets.top + 48 }]}
       >
         <LogoBrand size={52} />
       </LinearGradient>
