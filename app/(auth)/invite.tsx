@@ -1,37 +1,31 @@
 import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, KeyboardAvoidingView, Platform,
-  ScrollView, TouchableOpacity,
+  ScrollView, TouchableOpacity, TextInput,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { ArrowLeft, TicketStar, TickCircle, Briefcase } from 'iconsax-react-native';
+import { Sms, Lock, TicketStar, TickCircle, Briefcase } from 'iconsax-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../../constants/colors';
 import { useAuthStore } from '../../store/authStore';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Workspace } from '../../types';
+import ScreenBackground from '../../components/ScreenBackground';
 
-/* ─── Step 1: Credentials ─── */
-function CredentialsStep({
-  onNext,
-}: {
-  onNext: (email: string, password: string) => void;
-}) {
+/* ─── Step 1: Credentials (matches Figma) ─── */
+function CredentialsStep({ onNext }: { onNext: () => void }) {
+  const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirm, setConfirm] = useState('');
+  const [smsUpdates, setSmsUpdates] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { signup } = useAuthStore();
 
   const handleNext = async () => {
     if (!email.trim() || !password.trim()) {
-      setError('Please fill in all fields.');
-      return;
-    }
-    if (password !== confirm) {
-      setError('Passwords do not match.');
+      setError('Please fill in your email and password.');
       return;
     }
     if (password.length < 6) {
@@ -42,7 +36,7 @@ function CredentialsStep({
     setLoading(true);
     try {
       await signup(email.trim(), password);
-      onNext(email.trim(), password);
+      onNext();
     } catch {
       setError('Something went wrong. Please try again.');
     } finally {
@@ -51,55 +45,165 @@ function CredentialsStep({
   };
 
   return (
-    <View style={styles.body}>
-      <View style={styles.header}>
-        <LinearGradient colors={['#7B4FE9', '#4F35D4']} style={styles.iconCircle}>
-          <Text style={{ fontSize: 26 }}>👤</Text>
+    <View style={s1.container}>
+      {/* Title */}
+      <View style={s1.titleBlock}>
+        <Text style={s1.title}>Welcome</Text>
+        <Text style={s1.subtitle}>Become an enterprise creator</Text>
+      </View>
+
+      {/* Fields */}
+      <View style={s1.fields}>
+        {/* Phone number */}
+        <View style={s1.fieldGroup}>
+          <Text style={s1.label}>Phone number</Text>
+          <View style={s1.phoneField}>
+            <Text style={s1.flag}>🇺🇸</Text>
+            <Text style={s1.countryCode}>+1</Text>
+            <TextInput
+              style={s1.phoneInput}
+              value={phone}
+              onChangeText={setPhone}
+              placeholder="000 000 0000"
+              placeholderTextColor="rgba(255,255,255,0.35)"
+              keyboardType="phone-pad"
+            />
+          </View>
+        </View>
+
+        {/* Email */}
+        <View style={s1.fieldGroup}>
+          <Text style={s1.label}>Email</Text>
+          <View style={s1.inputRow}>
+            <TextInput
+              style={s1.textInput}
+              value={email}
+              onChangeText={(t) => { setEmail(t); setError(''); }}
+              placeholder="Enter your Email address"
+              placeholderTextColor="rgba(255,255,255,0.35)"
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+            <Sms size={22} color="rgba(255,255,255,0.4)" variant="Linear" />
+          </View>
+        </View>
+
+        {/* Password */}
+        <View style={s1.fieldGroup}>
+          <Text style={s1.label}>Password</Text>
+          <View style={s1.inputRow}>
+            <TextInput
+              style={s1.textInput}
+              value={password}
+              onChangeText={(t) => { setPassword(t); setError(''); }}
+              placeholder="Create password"
+              placeholderTextColor="rgba(255,255,255,0.35)"
+              secureTextEntry
+            />
+            <Lock size={22} color="rgba(255,255,255,0.4)" variant="Linear" />
+          </View>
+        </View>
+      </View>
+
+      {error ? <Text style={s1.error}>{error}</Text> : null}
+
+      {/* Checkbox */}
+      <TouchableOpacity
+        style={s1.checkboxRow}
+        onPress={() => setSmsUpdates(v => !v)}
+        activeOpacity={0.7}
+      >
+        <View style={[s1.checkbox, smsUpdates && s1.checkboxActive]}>
+          {smsUpdates && <Text style={s1.checkMark}>✓</Text>}
+        </View>
+        <Text style={s1.checkboxLabel}>Receive text updates from creator concierge</Text>
+      </TouchableOpacity>
+
+      {/* T&C */}
+      <Text style={s1.terms}>
+        <Text style={s1.termsGray}>by continuing you agree with app's </Text>
+        <Text style={s1.termsLink}>T&C</Text>
+        <Text style={s1.termsGray}> and </Text>
+        <Text style={s1.termsLink}>Privacy Policy</Text>
+      </Text>
+
+      {/* Next button */}
+      <TouchableOpacity
+        style={s1.btnWrap}
+        onPress={handleNext}
+        disabled={loading}
+        activeOpacity={0.88}
+      >
+        <LinearGradient
+          colors={['#874FE1', '#100D5B']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={s1.btn}
+        >
+          <Text style={s1.btnText}>{loading ? 'Please wait…' : 'Next'}</Text>
         </LinearGradient>
-        <Text style={styles.title}>Create Account</Text>
-        <Text style={styles.subtitle}>Enter your details to get started</Text>
-      </View>
-
-      <View style={styles.fields}>
-        <Input
-          label="Email or Phone Number"
-          placeholder="Enter your email or phone number"
-          value={email}
-          onChangeText={(t) => { setEmail(t); setError(''); }}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-        <Input
-          label="Password"
-          placeholder="Create a password"
-          value={password}
-          onChangeText={(t) => { setPassword(t); setError(''); }}
-          secureTextEntry
-        />
-        <Input
-          label="Confirm Password"
-          placeholder="Re-enter your password"
-          value={confirm}
-          onChangeText={(t) => { setConfirm(t); setError(''); }}
-          secureTextEntry
-        />
-      </View>
-
-      {error ? <Text style={styles.error}>{error}</Text> : null}
-
-      <Button title="Next" onPress={handleNext} loading={loading} />
+      </TouchableOpacity>
     </View>
   );
 }
 
+const s1 = StyleSheet.create({
+  container: { gap: 20 },
+  titleBlock: { gap: 4 },
+  title: { color: '#fff', fontSize: 24, fontWeight: '700' },
+  subtitle: { color: 'rgba(255,255,255,0.6)', fontSize: 14 },
+
+  fields: { gap: 16 },
+  fieldGroup: { gap: 4 },
+  label: { color: 'rgba(255,255,255,0.6)', fontSize: 14 },
+
+  /* Phone */
+  phoneField: {
+    flexDirection: 'row', alignItems: 'center', gap: 8,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    borderRadius: 8, paddingHorizontal: 12, height: 48,
+  },
+  flag: { fontSize: 18 },
+  countryCode: { color: '#fff', fontSize: 14, fontWeight: '500' },
+  phoneInput: { flex: 1, color: '#fff', fontSize: 14, paddingVertical: 0 },
+
+  /* Email / Password */
+  inputRow: {
+    flexDirection: 'row', alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    borderRadius: 8, paddingHorizontal: 12, height: 48, gap: 8,
+  },
+  textInput: { flex: 1, color: '#fff', fontSize: 14, paddingVertical: 0 },
+
+  error: { color: Colors.error, fontSize: 13, textAlign: 'center', marginTop: -8 },
+
+  /* Checkbox */
+  checkboxRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  checkbox: {
+    width: 20, height: 20, borderRadius: 4,
+    borderWidth: 1.5, borderColor: 'rgba(255,255,255,0.3)',
+    alignItems: 'center', justifyContent: 'center',
+  },
+  checkboxActive: {
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
+  },
+  checkMark: { color: '#fff', fontSize: 12, fontWeight: '700' },
+  checkboxLabel: { flex: 1, color: 'rgba(255,255,255,0.6)', fontSize: 14, lineHeight: 20 },
+
+  /* T&C */
+  terms: { textAlign: 'center', fontSize: 14, lineHeight: 22 },
+  termsGray: { color: 'rgba(255,255,255,0.6)' },
+  termsLink: { color: Colors.primary, fontWeight: '500' },
+
+  /* Button */
+  btnWrap: { borderRadius: 12, overflow: 'hidden' },
+  btn: { height: 48, alignItems: 'center', justifyContent: 'center' },
+  btnText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+});
+
 /* ─── Step 2: Invite Code (optional) ─── */
-function InviteCodeStep({
-  onSkip,
-  onContinue,
-}: {
-  onSkip: () => void;
-  onContinue: () => void;
-}) {
+function InviteCodeStep({ onSkip, onContinue }: { onSkip: () => void; onContinue: () => void }) {
   const { validateInvite } = useAuthStore();
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
@@ -162,7 +266,6 @@ function InviteCodeStep({
         </View>
       )}
 
-      {/* Skip option */}
       <TouchableOpacity style={styles.skipBtn} onPress={onSkip} activeOpacity={0.7}>
         <Text style={styles.skipText}>Skip for now</Text>
       </TouchableOpacity>
@@ -175,112 +278,96 @@ export default function SignUpScreen() {
   const router = useRouter();
   const [step, setStep] = useState<1 | 2>(1);
 
-  const handleCredentialsDone = (email: string, password: string) => {
-    setStep(2);
-  };
-
-  const goToSetup = () => {
-    router.push('/(auth)/setup');
-  };
+  const goToSetup = () => router.push('/(auth)/setup');
 
   return (
-    <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-        {/* Back button */}
-        <TouchableOpacity
-          style={styles.back}
-          onPress={() => {
-            if (step === 2) setStep(1);
-            else router.back();
-          }}
-        >
-          <ArrowLeft size={22} color={Colors.text} variant="Linear" />
-        </TouchableOpacity>
+    <View style={styles.flex}>
+      <ScreenBackground />
 
-        {/* Step indicator */}
-        <View style={styles.stepRow}>
-          <View style={[styles.stepDot, step >= 1 && styles.stepDotActive]} />
-          <View style={styles.stepLine} />
-          <View style={[styles.stepDot, step >= 2 && styles.stepDotActive]} />
+      {/* Logo header */}
+      <LinearGradient
+        colors={['rgba(75,8,109,0.18)', 'rgba(172,192,255,0.08)']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={styles.logoArea}
+      >
+        <LinearGradient colors={['#7B4FE9', '#4F35D4']} style={styles.logoCircle}>
+          <Text style={{ fontSize: 22 }}>🎬</Text>
+        </LinearGradient>
+        <View>
+          <Text style={styles.brandSub}>Enterprise</Text>
+          <Text style={styles.brandName}>Creator</Text>
         </View>
+      </LinearGradient>
 
-        {step === 1 ? (
-          <CredentialsStep onNext={handleCredentialsDone} />
-        ) : (
-          <InviteCodeStep onSkip={goToSetup} onContinue={goToSetup} />
-        )}
+      <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
 
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Already have an account? </Text>
-          <TouchableOpacity onPress={() => router.replace('/(auth)')}>
-            <Text style={styles.footerLink}>Login</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          {step === 1 ? (
+            <>
+              <CredentialsStep onNext={() => setStep(2)} />
+              <View style={styles.footer}>
+                <Text style={styles.footerText}>Already have an account? </Text>
+                <TouchableOpacity onPress={() => router.replace('/(auth)')}>
+                  <Text style={styles.footerLink}>Login</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          ) : (
+            <>
+              <TouchableOpacity style={styles.backBtn} onPress={() => setStep(1)}>
+                <Text style={styles.backText}>← Back</Text>
+              </TouchableOpacity>
+              <InviteCodeStep onSkip={goToSetup} onContinue={goToSetup} />
+              <View style={styles.footer}>
+                <Text style={styles.footerText}>Already have an account? </Text>
+                <TouchableOpacity onPress={() => router.replace('/(auth)')}>
+                  <Text style={styles.footerLink}>Login</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: Colors.background },
-  scroll: { flexGrow: 1, paddingHorizontal: 24, paddingTop: 60, paddingBottom: 40 },
-  back: { marginBottom: 20 },
 
-  /* Step indicator */
-  stepRow: {
-    flexDirection: 'row', alignItems: 'center',
-    marginBottom: 28, alignSelf: 'flex-start', gap: 0,
+  /* Logo header */
+  logoArea: {
+    flexDirection: 'row', alignItems: 'center', gap: 12,
+    paddingHorizontal: 24, paddingVertical: 28,
   },
-  stepDot: {
-    width: 10, height: 10, borderRadius: 5,
-    backgroundColor: Colors.surfaceElevated,
-    borderWidth: 1.5, borderColor: Colors.border,
-  },
-  stepDotActive: {
-    backgroundColor: Colors.primary,
-    borderColor: Colors.primary,
-  },
-  stepLine: {
-    width: 32, height: 2,
-    backgroundColor: Colors.border,
-  },
-
-  /* Shared */
-  body: { gap: 16 },
-  header: { alignItems: 'center', gap: 12, marginBottom: 8 },
-  iconCircle: {
-    width: 64, height: 64, borderRadius: 20,
+  logoCircle: {
+    width: 48, height: 48, borderRadius: 14,
     alignItems: 'center', justifyContent: 'center',
   },
-  title: { color: Colors.text, fontSize: 24, fontWeight: '700' },
-  subtitle: {
-    color: Colors.textSecondary, fontSize: 14,
-    textAlign: 'center', lineHeight: 20,
-  },
-  fields: { gap: 14 },
-  error: { color: Colors.error, fontSize: 13, textAlign: 'center' },
+  brandSub: { color: 'rgba(255,255,255,0.6)', fontSize: 12, letterSpacing: 0.5 },
+  brandName: { color: '#fff', fontSize: 22, fontWeight: '700', marginTop: -2 },
 
-  /* Invite code results */
-  companiesBox: {
-    backgroundColor: Colors.surface, borderRadius: 16,
-    padding: 16, gap: 10,
-    borderWidth: 1, borderColor: Colors.border,
-  },
+  scroll: { paddingHorizontal: 16, paddingTop: 24, paddingBottom: 40, gap: 24 },
+  backBtn: { marginBottom: 4 },
+  backText: { color: Colors.primary, fontSize: 14, fontWeight: '500' },
+
+  /* Invite step shared */
+  body: { gap: 16 },
+  header: { alignItems: 'center', gap: 12, marginBottom: 8 },
+  iconCircle: { width: 64, height: 64, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
+  title: { color: Colors.text, fontSize: 24, fontWeight: '700' },
+  subtitle: { color: Colors.textSecondary, fontSize: 14, textAlign: 'center', lineHeight: 20 },
+  companiesBox: { backgroundColor: Colors.surface, borderRadius: 16, padding: 16, gap: 10, borderWidth: 1, borderColor: Colors.border },
   successRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   successText: { color: Colors.text, fontSize: 13, fontWeight: '500' },
-  companyChip: {
-    flexDirection: 'row', alignItems: 'center', gap: 6,
-    backgroundColor: Colors.surfaceElevated,
-    padding: 10, borderRadius: 10,
-  },
+  companyChip: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: Colors.surfaceElevated, padding: 10, borderRadius: 10 },
   companyName: { color: Colors.text, fontSize: 14, fontWeight: '600' },
   companyIndustry: { color: Colors.textSecondary, fontSize: 12 },
-
-  /* Skip */
   skipBtn: { alignItems: 'center', paddingVertical: 6 },
   skipText: { color: Colors.textSecondary, fontSize: 14 },
 
-  footer: { flexDirection: 'row', justifyContent: 'center', marginTop: 36 },
+  footer: { flexDirection: 'row', justifyContent: 'center', marginTop: 8 },
   footerText: { color: Colors.textSecondary, fontSize: 14 },
   footerLink: { color: Colors.primary, fontSize: 14, fontWeight: '600' },
 });
