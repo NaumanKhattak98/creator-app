@@ -107,7 +107,7 @@ export default function NotificationsScreen() {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        style={{ marginTop: 8 }}
+        style={{ marginTop: 0 }}
         contentContainerStyle={styles.filterRow}
       >
         {FILTERS.map(f => (
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   title: { color: Colors.text, fontSize: 20, fontWeight: '600', flex: 1, textAlign: 'center' },
 
   filterRow: {
-    paddingHorizontal: 16, paddingVertical: 10, gap: 8,
+    paddingHorizontal: 16, paddingVertical: 6, gap: 8,
     flexDirection: 'row', alignItems: 'center',
   },
   chip: {
