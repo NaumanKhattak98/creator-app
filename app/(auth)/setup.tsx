@@ -6,10 +6,13 @@ import {
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { ArrowLeft, Gallery, Profile, Camera } from 'iconsax-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../../constants/colors';
 import { useAuthStore } from '../../store/authStore';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
+import { LogoBrand } from '../../components/LogoBrand';
+import ScreenBackground from '../../components/ScreenBackground';
 
 export default function SetupScreen() {
   const router = useRouter();
@@ -55,14 +58,27 @@ export default function SetupScreen() {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-        <TouchableOpacity style={styles.back} onPress={() => router.back()}>
-          <ArrowLeft size={22} color={Colors.text} variant="Linear" />
-        </TouchableOpacity>
+    <View style={styles.flex}>
+      <ScreenBackground />
 
-        <Text style={styles.title}>Set Up Your Profile</Text>
-        <Text style={styles.subtitle}>This is how brands and your audience will see you.</Text>
+      {/* Logo header — outside scroll so gradient spans full width */}
+      <LinearGradient
+        colors={['rgba(75,8,109,0.18)', 'rgba(172,192,255,0.08)']}
+        start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+        style={styles.logoArea}
+      >
+        <LogoBrand size={52} />
+      </LinearGradient>
+
+      <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+
+          <TouchableOpacity style={styles.back} onPress={() => router.back()}>
+            <ArrowLeft size={22} color={Colors.text} variant="Linear" />
+          </TouchableOpacity>
+
+          <Text style={styles.title}>Set Up Your Profile</Text>
+          <Text style={styles.subtitle}>This is how brands and your audience will see you.</Text>
 
         {/* Banner */}
         <TouchableOpacity style={styles.bannerPicker} onPress={() => pickImage('banner')}>
@@ -114,15 +130,20 @@ export default function SetupScreen() {
 
         {error ? <Text style={styles.error}>{error}</Text> : null}
 
-        <Button title="Create Profile" onPress={handleSubmit} loading={loading} style={styles.btn} />
-      </ScrollView>
-    </KeyboardAvoidingView>
+          <Button title="Create Profile" onPress={handleSubmit} loading={loading} style={styles.btn} />
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: Colors.background },
-  scroll: { flexGrow: 1, paddingHorizontal: 24, paddingTop: 60, paddingBottom: 40, gap: 20 },
+  logoArea: {
+    flexDirection: 'row', alignItems: 'center',
+    paddingHorizontal: 24, paddingVertical: 28,
+  },
+  scroll: { flexGrow: 1, paddingHorizontal: 24, paddingTop: 0, paddingBottom: 40, gap: 20 },
   back: { marginBottom: 8 },
   title: { color: Colors.text, fontSize: 24, fontWeight: '700' },
   subtitle: { color: Colors.textSecondary, fontSize: 14, marginTop: -12 },

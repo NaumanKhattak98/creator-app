@@ -5,11 +5,13 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Play, Google, Apple } from 'iconsax-react-native';
+import { Google, Apple } from 'iconsax-react-native';
 import { Colors } from '../../constants/colors';
 import { useAuthStore } from '../../store/authStore';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
+import { LogoBrand } from '../../components/LogoBrand';
+import ScreenBackground from '../../components/ScreenBackground';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -43,17 +45,22 @@ export default function LoginScreen() {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-        <View style={styles.logoArea}>
-          <LinearGradient colors={['#7B4FE9', '#4F35D4']} style={styles.logoCircle}>
-            <Play size={28} color="#fff" variant="Linear" />
-          </LinearGradient>
-          <Text style={styles.brand}>Enterprise</Text>
-          <Text style={styles.brandBold}>Creator</Text>
-        </View>
+    <View style={styles.flex}>
+      <ScreenBackground />
 
-        <View style={styles.card}>
+      {/* Logo header — outside scroll so gradient spans full width */}
+      <LinearGradient
+        colors={['rgba(75,8,109,0.18)', 'rgba(172,192,255,0.08)']}
+        start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+        style={styles.logoArea}
+      >
+        <LogoBrand size={52} />
+      </LinearGradient>
+
+      <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+
+          <View style={styles.card}>
           <Text style={styles.title}>Welcome Back</Text>
           <Text style={styles.subtitle}>Enter your account details to login</Text>
 
@@ -99,25 +106,26 @@ export default function LoginScreen() {
           </View>
         </View>
 
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Don't have an account? </Text>
-          <TouchableOpacity onPress={() => router.push('/(auth)/invite')}>
-            <Text style={styles.footerLink}>Sign Up</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Don't have an account? </Text>
+            <TouchableOpacity onPress={() => router.push('/(auth)/invite')}>
+              <Text style={styles.footerLink}>Sign Up</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: Colors.background },
-  scroll: { flexGrow: 1, paddingHorizontal: 24, paddingTop: 80, paddingBottom: 40 },
-  logoArea: { alignItems: 'center', marginBottom: 40, gap: 4 },
-  logoCircle: { width: 64, height: 64, borderRadius: 20, alignItems: 'center', justifyContent: 'center', marginBottom: 10 },
-  brand: { color: Colors.textSecondary, fontSize: 13, letterSpacing: 1.5, textTransform: 'uppercase' },
-  brandBold: { color: Colors.text, fontSize: 28, fontWeight: '700', marginTop: -2 },
-  card: { gap: 16 },
+  scroll: { flexGrow: 1, paddingHorizontal: 24, paddingTop: 0, paddingBottom: 40, gap: 32 },
+  logoArea: {
+    flexDirection: 'row', alignItems: 'center',
+    paddingHorizontal: 24, paddingVertical: 28,
+  },
+  card: { gap: 16, paddingHorizontal: 24 },
   title: { color: Colors.text, fontSize: 26, fontWeight: '700' },
   subtitle: { color: Colors.textSecondary, fontSize: 14, marginTop: -8 },
   fields: { gap: 14 },
@@ -132,7 +140,7 @@ const styles = StyleSheet.create({
     borderWidth: 1, borderColor: Colors.border,
   },
   socialText: { color: Colors.text, fontSize: 14, fontWeight: '500' },
-  footer: { flexDirection: 'row', justifyContent: 'center', marginTop: 32 },
+  footer: { flexDirection: 'row', justifyContent: 'center', marginTop: 8, paddingHorizontal: 24 },
   footerText: { color: Colors.textSecondary, fontSize: 14 },
   footerLink: { color: Colors.primary, fontSize: 14, fontWeight: '600' },
 });

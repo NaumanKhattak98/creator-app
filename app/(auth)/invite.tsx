@@ -12,6 +12,7 @@ import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Workspace } from '../../types';
 import ScreenBackground from '../../components/ScreenBackground';
+import { LogoBrand } from '../../components/LogoBrand';
 
 /* ─── Step 1: Credentials (matches Figma) ─── */
 function CredentialsStep({ onNext }: { onNext: () => void }) {
@@ -291,13 +292,7 @@ export default function SignUpScreen() {
         end={{ x: 1, y: 0 }}
         style={styles.logoArea}
       >
-        <LinearGradient colors={['#7B4FE9', '#4F35D4']} style={styles.logoCircle}>
-          <Text style={{ fontSize: 22 }}>🎬</Text>
-        </LinearGradient>
-        <View>
-          <Text style={styles.brandSub}>Enterprise</Text>
-          <Text style={styles.brandName}>Creator</Text>
-        </View>
+        <LogoBrand size={52} />
       </LinearGradient>
 
       <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -341,13 +336,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', gap: 12,
     paddingHorizontal: 24, paddingVertical: 28,
   },
-  logoCircle: {
-    width: 48, height: 48, borderRadius: 14,
-    alignItems: 'center', justifyContent: 'center',
-  },
-  brandSub: { color: 'rgba(255,255,255,0.6)', fontSize: 12, letterSpacing: 0.5 },
-  brandName: { color: '#fff', fontSize: 22, fontWeight: '700', marginTop: -2 },
-
   scroll: { paddingHorizontal: 16, paddingTop: 24, paddingBottom: 40, gap: 24 },
   backBtn: { marginBottom: 4 },
   backText: { color: Colors.primary, fontSize: 14, fontWeight: '500' },
