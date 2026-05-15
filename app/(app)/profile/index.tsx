@@ -208,7 +208,7 @@ export default function ProfileScreen() {
           <ArrowDown2 size={14} color={Colors.textSecondary} variant="Linear" />
         </TouchableOpacity>
         {/* Notification icon */}
-        <TouchableOpacity style={styles.bellBtn}>
+        <TouchableOpacity style={styles.bellBtn} onPress={() => router.push('/(app)/profile/settings/notifications')}>
           <Notification size={22} color={Colors.text} variant="Linear" />
         </TouchableOpacity>
       </View>
