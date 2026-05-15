@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  KeyboardAvoidingView, Platform, Image,
+  KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Google, Apple } from 'iconsax-react-native';
 import { Colors } from '../../constants/colors';
 import { useAuthStore } from '../../store/authStore';
@@ -15,6 +16,7 @@ import ScreenBackground from '../../components/ScreenBackground';
 
 export default function LoginScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { login, loginWithGoogle, loginWithApple } = useAuthStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -48,11 +50,11 @@ export default function LoginScreen() {
     <View style={styles.flex}>
       <ScreenBackground />
 
-      {/* Logo header — outside scroll so gradient spans full width */}
+      {/* Logo header — outside scroll, respects status-bar / notch */}
       <LinearGradient
         colors={['rgba(75,8,109,0.18)', 'rgba(172,192,255,0.08)']}
         start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-        style={styles.logoArea}
+        style={[styles.logoArea, { paddingTop: insets.top + 12 }]}
       >
         <LogoBrand size={52} />
       </LinearGradient>
@@ -125,7 +127,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center',
     paddingHorizontal: 24, paddingVertical: 28,
   },
-  card: { gap: 16, paddingHorizontal: 24 },
+  card: { gap: 16 },
   title: { color: Colors.text, fontSize: 26, fontWeight: '700' },
   subtitle: { color: Colors.textSecondary, fontSize: 14, marginTop: -8 },
   fields: { gap: 14 },
@@ -140,7 +142,7 @@ const styles = StyleSheet.create({
     borderWidth: 1, borderColor: Colors.border,
   },
   socialText: { color: Colors.text, fontSize: 14, fontWeight: '500' },
-  footer: { flexDirection: 'row', justifyContent: 'center', marginTop: 8, paddingHorizontal: 24 },
+  footer: { flexDirection: 'row', justifyContent: 'center', marginTop: 8 },
   footerText: { color: Colors.textSecondary, fontSize: 14 },
   footerLink: { color: Colors.primary, fontSize: 14, fontWeight: '600' },
 });

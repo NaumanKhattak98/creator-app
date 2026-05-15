@@ -7,6 +7,7 @@ import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { ArrowLeft, Gallery, Profile, Camera } from 'iconsax-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from '../../constants/colors';
 import { useAuthStore } from '../../store/authStore';
 import { Button } from '../../components/ui/Button';
@@ -16,6 +17,7 @@ import ScreenBackground from '../../components/ScreenBackground';
 
 export default function SetupScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { setupProfile } = useAuthStore();
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
@@ -61,11 +63,11 @@ export default function SetupScreen() {
     <View style={styles.flex}>
       <ScreenBackground />
 
-      {/* Logo header — outside scroll so gradient spans full width */}
+      {/* Logo header — outside scroll, respects status-bar / notch */}
       <LinearGradient
         colors={['rgba(75,8,109,0.18)', 'rgba(172,192,255,0.08)']}
         start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-        style={styles.logoArea}
+        style={[styles.logoArea, { paddingTop: insets.top + 12 }]}
       >
         <LogoBrand size={52} />
       </LinearGradient>

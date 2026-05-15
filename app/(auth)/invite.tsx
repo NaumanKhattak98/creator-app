@@ -6,6 +6,7 @@ import {
 import { useRouter } from 'expo-router';
 import { Sms, Lock, TicketStar, TickCircle, Briefcase } from 'iconsax-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from '../../constants/colors';
 import { useAuthStore } from '../../store/authStore';
 import { Button } from '../../components/ui/Button';
@@ -277,6 +278,7 @@ function InviteCodeStep({ onSkip, onContinue }: { onSkip: () => void; onContinue
 /* ─── Main Screen ─── */
 export default function SignUpScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [step, setStep] = useState<1 | 2>(1);
 
   const goToSetup = () => router.push('/(auth)/setup');
@@ -290,7 +292,7 @@ export default function SignUpScreen() {
         colors={['rgba(75,8,109,0.18)', 'rgba(172,192,255,0.08)']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
-        style={styles.logoArea}
+        style={[styles.logoArea, { paddingTop: insets.top + 12 }]}
       >
         <LogoBrand size={52} />
       </LinearGradient>
