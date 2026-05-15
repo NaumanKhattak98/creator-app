@@ -107,7 +107,7 @@ export default function NotificationsScreen() {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        style={{ marginTop: 0 }}
+        style={styles.filterScroll}
         contentContainerStyle={styles.filterRow}
       >
         {FILTERS.map(f => (
@@ -123,6 +123,7 @@ export default function NotificationsScreen() {
 
       {/* Notifications grouped by date */}
       <FlatList
+        style={styles.listFlex}
         data={grouped}
         keyExtractor={g => g.group}
         contentContainerStyle={styles.list}
@@ -163,10 +164,15 @@ const styles = StyleSheet.create({
   backBtn: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
   title: { color: Colors.text, fontSize: 20, fontWeight: '600', flex: 1, textAlign: 'center' },
 
+  filterScroll: {
+    height: 44,          // fixed height — never shifts on filter change
+    flexShrink: 0,
+  },
   filterRow: {
-    paddingHorizontal: 16, paddingVertical: 6, gap: 8,
+    paddingHorizontal: 16, gap: 8,
     flexDirection: 'row', alignItems: 'center',
   },
+  listFlex: { flex: 1 },
   chip: {
     paddingHorizontal: 8, paddingTop: 5, paddingBottom: 6,
     borderRadius: 8,
