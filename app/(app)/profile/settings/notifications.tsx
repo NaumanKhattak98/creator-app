@@ -164,7 +164,8 @@ const styles = StyleSheet.create({
   title: { color: Colors.text, fontSize: 20, fontWeight: '600', flex: 1, textAlign: 'center' },
 
   filterRow: {
-    paddingHorizontal: 16, paddingBottom: 10, gap: 8, flexDirection: 'row',
+    paddingHorizontal: 16, paddingVertical: 10, gap: 8,
+    flexDirection: 'row', alignItems: 'center',
   },
   chip: {
     paddingHorizontal: 8, paddingTop: 5, paddingBottom: 6,
