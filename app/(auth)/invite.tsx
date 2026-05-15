@@ -289,7 +289,7 @@ export default function SignUpScreen() {
 
       {/* Logo header */}
       <LinearGradient
-        colors={['rgba(75,8,109,0.18)', 'rgba(172,192,255,0.08)']}
+        colors={['rgba(75,8,109,0.10)', 'rgba(172,192,255,0.10)']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={[styles.logoArea, { paddingTop: insets.top + 12 }]}
