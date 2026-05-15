@@ -9,8 +9,8 @@ import { ArrowLeft2, DocumentText1, TrendUp, CloseCircle, RefreshCircle, Wallet,
 import { Colors } from '../../../../constants/colors';
 import ScreenBackground from '../../../../components/ScreenBackground';
 
-type NotifFilter = 'All' | 'Listings' | 'Subscriptions' | 'Analysis' | 'Jobs';
-const FILTERS: NotifFilter[] = ['All', 'Listings', 'Subscriptions', 'Analysis', 'Jobs'];
+type NotifFilter = 'All' | 'Listings' | 'Payments' | 'Analysis' | 'Jobs';
+const FILTERS: NotifFilter[] = ['All', 'Listings', 'Payments', 'Analysis', 'Jobs'];
 
 type Notification = {
   id: string;
@@ -62,7 +62,7 @@ const NOTIFICATIONS: Notification[] = [
   {
     id: '5', icon: 'wallet-outline', iconColor: '#02C121', iconBg: 'rgba(2,193,33,0.1)',
     company: 'Kayak', message: 'You have initiated a withdrawal of $1900',
-    type: 'Subscriptions', dateGroup: 'This Week',
+    type: 'Payments', dateGroup: 'This Week',
   },
   {
     id: '6', icon: 'cash-outline', iconColor: '#02C121', iconBg: 'rgba(2,193,33,0.1)',
